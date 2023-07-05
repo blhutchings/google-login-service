@@ -2,6 +2,10 @@ import { LoginErrorStatus } from "../types/LoginErrorStatus";
 import { PageState } from "../types/PageState";
 import RequestContext from "../RequestContext";
 
+type ErrorOptions = {
+	cause?: unknown
+}
+
 export class GoogleServiceError extends Error {}
 
 export class GoogleServiceLoginError extends GoogleServiceError {
