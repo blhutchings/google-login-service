@@ -1,6 +1,6 @@
 {
 	"name": "google-service-login",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Produce browser cookies for an Google Account",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",
@@ -9,8 +9,8 @@
 		"compile": "tsc",
 		"prestart": "npm run compile && npm run lint",
 		"start": "node build/index.js",
-		"build": "npm run clean && tsup",
-		"prepublish": "npm run lint:fix",
+		"build": "tsup",
+		"prepublish": "npm run lint:fix && npm run build",
 		"lint": "npx eslint src/**/*.ts",
 		"lint:fix": "npx eslint src/**/*.ts --fix"
 	},
