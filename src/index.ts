@@ -4,6 +4,7 @@ export { GoogleServiceLogin };
 
 export * from "./browser/BrowserController";
 export * from "./cookies/ICookieStore";
+export * from "./cookies/MemoryCookieStore"
 export * from "./RequestSession";
 export * from "./RequestContext";
 export { ActionHandler, ActionHandlerRequest } from "./handlers/abstract/AbstractActionHandler";
