@@ -1,35 +1,51 @@
 {
-  "name": "google-service-login",
-  "version": "1.0.0",
-  "description": "Produce browser cookies for an Google Account",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "compile": "tsc",
-    "prestart": "npm run compile && npm run lint",
-    "start": "node build/index.js",
-    "dist": "tsup",
-    "lint": "npx eslint src/**/*.ts",
-    "lint:fix": "npx eslint src/**/*.ts --fix"
-  },
-  "author": "Benjamin Hutchings",
-  "license": "MIT",
-  "dependencies": {
-    "lru-cache": "^10.0.0",
-    "puppeteer": "^20.3.0",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
-  },
-  "devDependencies": {
-    "@types/node": "^20.2.3",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
-    "2captcha": "^3.0.7",
-    "eslint": "^8.44.0",
-    "glob": "^10.3.1",
-    "otpauth": "^9.1.3",
-    "tsup": "^7.1.0",
-    "typescript": "^5.0.4"
-  }
+	"name": "google-service-login",
+	"version": "1.0.0",
+	"description": "Produce browser cookies for an Google Account",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"compile": "tsc",
+		"prestart": "npm run compile && npm run lint",
+		"start": "node build/index.js",
+		"build": "npm run clean && tsup",
+		"prepublish": "npm run lint:fix",
+		"lint": "npx eslint src/**/*.ts",
+		"lint:fix": "npx eslint src/**/*.ts --fix"
+	},
+	"author": "Benjamin Hutchings",
+	"license": "ISC",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/blhutchings/google-service-login"
+	},
+	"keywords": [
+		"google login",
+		"puppeteer"
+	],
+	"bugs": {
+		"url": "https://github.com/blhutchings/google-service-login/issues"
+	},
+	"homepage": "https://github.com/blhutchings/google-service-login#readme",
+	"files": [
+		"dist/**/*"
+	],
+	"dependencies": {
+		"lru-cache": "^10.0.0",
+		"puppeteer": "^20.3.0",
+		"puppeteer-extra": "^3.3.6",
+		"puppeteer-extra-plugin-stealth": "^2.11.2"
+	},
+	"devDependencies": {
+		"@types/node": "^20.2.3",
+		"@typescript-eslint/eslint-plugin": "^5.60.1",
+		"@typescript-eslint/parser": "^5.60.1",
+		"2captcha": "^3.0.7",
+		"eslint": "^8.44.0",
+		"glob": "^10.3.1",
+		"otpauth": "^9.1.3",
+		"tsup": "^7.1.0",
+		"typescript": "^5.0.4"
+	}
 }
