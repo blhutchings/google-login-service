@@ -1,10 +1,10 @@
 import GoogleServiceLogin from "./GoogleServiceLogin";
-
+import MemoryCookieStore from "./cookies/MemoryCookieStore";
 export { GoogleServiceLogin };
+export { MemoryCookieStore };
 
 export * from "./browser/BrowserController";
 export * from "./cookies/ICookieStore";
-export * from "./cookies/MemoryCookieStore"
 export * from "./RequestSession";
 export * from "./RequestContext";
 export { ActionHandler, ActionHandlerRequest } from "./handlers/abstract/AbstractActionHandler";

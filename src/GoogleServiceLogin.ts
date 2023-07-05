@@ -3,7 +3,7 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import RequestContext from "./RequestContext";
 import BrowserController from "./browser/BrowserController";
-import ICookieStore from "./cookies/ICookieStore";
+import { ICookieStore } from "./cookies/ICookieStore";
 import MemoryCookieStore from "./cookies/MemoryCookieStore";
 import GotoServiceLogin from "./handlers/GotoServiceLogin";
 import Identifier from "./handlers/Identifier";
@@ -35,9 +35,9 @@ import AutoSignOut from "./handlers/session/AutoSignOut";
 
 
 export type GoogleLoginServiceOptions = {
-    launchOptions?: PuppeteerLaunchOptions,
-    browserController?: BrowserController,
-    cookieStore?: ICookieStore;
+	launchOptions?: PuppeteerLaunchOptions,
+	browserController?: BrowserController,
+	cookieStore?: ICookieStore;
 	debug?: {
 		autoSignOut?: boolean;
 		autoClose?: boolean;
@@ -151,21 +151,21 @@ export default class GoogleServiceLogin {
 	}
 
 	addActionHandler(name: "totp", handler: TOTPActionHandler): void
-	addActionHandler(name:"normal-captcha", handler: NormalCaptchaActionHandler): void
+	addActionHandler(name: "normal-captcha", handler: NormalCaptchaActionHandler): void
 	addActionHandler(name: "recaptcha", handler: ReCaptchaActionHandler): void
 	addActionHandler(name: string, handler: ActionHandler) {
-		switch(name) {
-		case "totp":
-			this.totp.addActionHandler(handler);
-			break;
-		case "normal-captcha":
-			this.normalCaptcha.addActionHandler(handler);
-			break;
-		case "recaptcha":
-			this.recaptcha.addActionHandler(handler);
-			break;
-		default:
-			throw Error(`No ActionHandler of name '${name}'`);
+		switch (name) {
+			case "totp":
+				this.totp.addActionHandler(handler);
+				break;
+			case "normal-captcha":
+				this.normalCaptcha.addActionHandler(handler);
+				break;
+			case "recaptcha":
+				this.recaptcha.addActionHandler(handler);
+				break;
+			default:
+				throw Error(`No ActionHandler of name '${name}'`);
 		}
 	}
 
@@ -175,6 +175,6 @@ export default class GoogleServiceLogin {
 		const cdpSession = await page.target().createCDPSession();
 
 		const loginContext = new RequestContext(request, context, page, cdpSession);
-		return new RequestSession(this.startHandler, this.retry,loginContext);
+		return new RequestSession(this.startHandler, this.retry, loginContext);
 	}
 }
