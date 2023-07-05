@@ -1,6 +1,5 @@
 import GoogleServiceLogin from "./GoogleServiceLogin";
 
-export default GoogleServiceLogin;
 export { GoogleServiceLogin };
 
 export * from "./browser/BrowserController";
