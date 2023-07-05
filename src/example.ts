@@ -1,7 +1,7 @@
 import { Solver } from "2captcha";
 import * as OTPAuth from "otpauth";
 import { PuppeteerLaunchOptions } from "puppeteer";
-import GoogleLoginService from "./GoogleLoginService";
+import GoogleServiceLogin from "./GoogleServiceLogin";
 import { ActionHandlerRequest } from "./handlers/abstract/AbstractActionHandler";
 import { NormalCaptchaResponse } from "./handlers/captcha/NormalCaptcha";
 import { ReCaptchaResponse } from "./handlers/captcha/ReCaptcha";
@@ -30,7 +30,7 @@ async function main() {
 		]
 	};
 
-	const service = new GoogleLoginService({
+	const service = new GoogleServiceLogin({
 		launchOptions: options
 	});
 
@@ -49,7 +49,7 @@ async function main() {
 
 	for (let i = 0; i < 10; i++) {
 		try {
-			const session = await service.create({
+			const session = await service.login({
 				identifier: "",
 				password: "",
 			});

@@ -34,7 +34,7 @@ import RetryHandler from "./handlers/session/ResumeHandler";
 import AutoSignOut from "./handlers/session/AutoSignOut";
 
 
-type GoogleLoginServiceOptions = {
+export type GoogleLoginServiceOptions = {
     launchOptions?: PuppeteerLaunchOptions,
     browserController?: BrowserController,
     cookieStore?: ICookieStore;
@@ -44,7 +44,7 @@ type GoogleLoginServiceOptions = {
 	}
 }
 
-export default class GoogleLoginService {
+export default class GoogleServiceLogin {
 	private puppeteer = puppeteer;
 	private options: Required<GoogleLoginServiceOptions>;
 
@@ -169,7 +169,7 @@ export default class GoogleLoginService {
 		}
 	}
 
-	async create(request: LoginRequest): Promise<RequestSession> {
+	async login(request: LoginRequest): Promise<RequestSession> {
 		const context = await this.options.browserController.createLoginBrowserContext();
 		const page = await SessionPage.init(context);
 		const cdpSession = await page.target().createCDPSession();
