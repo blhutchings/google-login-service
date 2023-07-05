@@ -9,8 +9,8 @@ export * from './RequestSession'
 export * from './RequestContext'
 export { ActionHandler, ActionHandlerRequest } from './handlers/abstract/AbstractActionHandler'
 export { TOTPActionHandler } from './handlers/verification/TOTPVerification'
-export { NormalCaptchaActionHandler } from './handlers/captcha/NormalCaptcha'
-export { ReCaptchaActionHandler } from './handlers/captcha/ReCaptcha'
+export { NormalCaptchaActionHandler, NormalCaptchaResponse } from './handlers/captcha/NormalCaptcha'
+export { ReCaptchaActionHandler, ReCaptchaResponse } from './handlers/captcha/ReCaptcha'
 
 export { GoogleServiceError, GoogleServiceLoginError, GoogleServiceLoginUndefinedError } from './utils/LoginError';
 export * from './types/LoginErrorStatus'
