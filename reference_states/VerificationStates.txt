@@ -1,0 +1,43 @@
+2-Step Enabled
+============================
+OfflineOTP
+https://accounts.google.com/signin/v2/challenge/ootp
+data-challengetype="5"
+
+SMSVerificationCode
+https://accounts.google.com/signin/v2/challenge/ipp
+data-challengetype="9"
++++++++++++++++++++++++++++
+Google Prompt
+https://accounts.google.com/v3/signin/challenge/dp
+data-challengetype="39"
+
+OR
+
+TimeOTP
+https://accounts.google.com/signin/v2/challenge/totp
+data-challengetype="6"
++++++++++++++++++++++++++++
+
+Phone Set
+============================
+SMSVerificationCode
+https://accounts.google.com/signin/v2/challenge/ipp
+data-challengetype="9"
+
+Phone Not Set
+============================
+ConfirmRecoveryEmail
+https://accounts.google.com/signin/v2/challenge/kpe
+
+EmailVerificationCode
+https://accounts.google.com/signin/v2/challenge/ipe
+
+WebVerify
+https://accounts.google.com/signin/v2/challenge/wa
+
+
+Unsupported
+==============
+Passkey
+https://accounts.google.com/signin/v2/challenge/pk

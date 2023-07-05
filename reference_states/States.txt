@@ -1,0 +1,29 @@
+Submit Email
+https://accounts.google.com/v3/signin/identifier
+
+Submit Password
+https://accounts.google.com/v3/signin/challenge/pwd
+
+UnknownError
+https://accounts.google.com/v3/signin/unknownerror
+
+DeniedSigninRejected
+https://accounts.google.com/signin/v2/deniedsigninrejected
+
+Change Password
+https://accounts.google.com/signin/v2/speedbump/changepassword/changepasswordform
+https://accounts.google.com/signin/v2/speedbump/changepassword/changepasswordnudge
+
+Select Verification
+https://accounts.google.com/signin/v2/challenge/selection
+
+Additional_Security
+https://gds.google.com/web/chip
+
+Session Expired
+https://accounts.google.com/info/sessionexpired
+
+ReCaptcha - Appears when using phone as identifier
+https://accounts.google.com/signin/v2/challenge/recaptcha
+
+
