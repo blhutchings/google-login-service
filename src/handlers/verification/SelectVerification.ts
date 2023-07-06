@@ -11,7 +11,8 @@ export default class SelectVerification extends AbstractHandler {
 	private verificationHandlers: Map<number, AbstractVerificationHandler<ActionHandler>> = new Map();
 
 	async canHandle(context: RequestContext): Promise<boolean> {
-		return context.page.url().startsWith("https://accounts.google.com/signin/v2/challenge/selection");
+		return context.page.url().startsWith("https://accounts.google.com/signin/v2/challenge/selection") || 
+				context.page.url().startsWith("https://accounts.google.com/v3/signin/challenge/selection");
 	}
 
 	addHandler(handler: AbstractVerificationHandler<ActionHandler>) {
@@ -20,7 +21,8 @@ export default class SelectVerification extends AbstractHandler {
 	}
 
 	async handle(context: RequestContext): Promise<LoginResponse> {
-		const challengeElements = await context.page.$$("div[data-challengetype][data-challengeunavailable=\"false\"]:not([data-challengetype=\"null\"])");
+		const challengeElements = await context.page.$$("div[data-challengetype]:not([data-challengetype='null'][data-challengeunavailable='true'])");
+		//const challengeElements = await context.page.$$("div[data-challengetype]:not([data-challengetype='null'][data-challengeunavailable='true'])");
 
 		const challengeMap = new Map<number, ElementHandle<HTMLDivElement>>();
 

@@ -19,8 +19,8 @@ export default class DefaultVerificationMethodPrompt extends AbstractHandler {
 				return false;
 			}
 		});
+
 		if (ok) {
-			await context.page.waitForNavigation();
 			return this.nextHandler(context);
 		} else {
 			throw await GoogleServiceLoginErrorFactory.createUndefined(context, "Could not find element to default verification method prompt");
