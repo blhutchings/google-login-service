@@ -3,7 +3,8 @@ import MemoryCookieStore from "./cookies/MemoryCookieStore";
 export { GoogleServiceLogin };
 export { MemoryCookieStore };
 
-export * from "./browser/BrowserController";
+export * from "./browser/LocalBrowserController";
+export * from "./browser/AbstractBrowserController"
 export * from "./cookies/ICookieStore";
 export * from "./RequestSession";
 export * from "./RequestContext";
