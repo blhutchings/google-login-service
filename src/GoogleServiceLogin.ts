@@ -1,8 +1,6 @@
-import { PuppeteerLaunchOptions } from "puppeteer";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import RequestContext from "./RequestContext";
-import BrowserController from "./browser/BrowserController";
 import { ICookieStore } from "./cookies/ICookieStore";
 import MemoryCookieStore from "./cookies/MemoryCookieStore";
 import GotoServiceLogin from "./handlers/GotoServiceLogin";
@@ -24,55 +22,78 @@ import AdditionalSecurityPrompt from "./handlers/prompts/AdditionalSecurity";
 import ChangePasswordNudgePrompt from "./handlers/prompts/ChangePasswordNudgePrompt";
 import DefaultVerificationMethodPrompt from "./handlers/prompts/DefaultVerificationMethodPrompt";
 import AutoClose from "./handlers/session/AutoClose";
-import CookieLoader from "./handlers/session/CookierLoader";
+import CookieStoreHandler from "./handlers/session/CookieStoreHandler";
 import SelectVerification from "./handlers/verification/SelectVerification";
 import TOTPVerification, { TOTPActionHandler } from "./handlers/verification/TOTPVerification";
-import { LoginRequest } from "./types/LoginRequest";
 import SessionPage from "./utils/SessionPage";
 import RequestSession from "./RequestSession";
-import RetryHandler from "./handlers/session/ResumeHandler";
 import AutoSignOut from "./handlers/session/AutoSignOut";
+import { PuppeteerLaunchOptions } from "puppeteer-core";
+import { PuppeteerExtra } from "puppeteer-extra";
+import LocalBrowserController from "./browser/LocalBrowserController";
+import RemoteBrowserController from "./browser/RemoteBrowserController";
+import { LoginRequest } from "./types/LoginRequest";
+import { ConnectOptions } from "puppeteer";
+import { AbstractBrowserController } from "./browser/AbstractBrowserController";
+import { GoogleServiceError } from "./utils/LoginError";
 
 
 export type GoogleLoginServiceOptions = {
-	launchOptions?: PuppeteerLaunchOptions,
-	browserController?: BrowserController,
+	browserTimeout?: number,
+	browserKeepAlive?: boolean,
 	cookieStore?: ICookieStore;
 	debug?: {
 		autoSignOut?: boolean;
 		autoClose?: boolean;
 	}
-}
+} & ({
+	browserType?: "local"
+	launchOptions?: PuppeteerLaunchOptions,
+} | {
+	browserType?: "remote"
+	launchOptions: ConnectOptions,
+})
 
 export default class GoogleServiceLogin {
-	private puppeteer = puppeteer;
-	private options: Required<GoogleLoginServiceOptions>;
+	private puppeteer: PuppeteerExtra;
+	private cookieStore: ICookieStore;
+	private browserController: AbstractBrowserController;
 
 	private startHandler: AbstractHandler;
-	private retry: RetryHandler;
 
 	// Action Handlers
 	private recaptcha: ReCaptcha;
 	private normalCaptcha: NormalCaptcha;
 	private totp: TOTPVerification;
 
-	constructor(options: GoogleLoginServiceOptions = {}) {
+	constructor(options: GoogleLoginServiceOptions) {
+		const puppeteerExtra = new PuppeteerExtra(puppeteer);
 		const stealth = StealthPlugin();
 		stealth.enabledEvasions.delete("iframe.contentWindow");
 		stealth.enabledEvasions.delete("navigator.plugins");
-		this.puppeteer.use(stealth);
+		puppeteerExtra.use(stealth);
+		this.puppeteer = puppeteerExtra;
 
 		const debugOptions = {
 			autoSignOut: options.debug?.autoSignOut ?? false,
 			autoClose: options.debug?.autoClose ?? true
 		};
+		options.browserTimeout = options.browserTimeout ?? 30000;
+		options.browserKeepAlive = options.browserKeepAlive ?? false;
+		options.cookieStore = options.cookieStore ?? new MemoryCookieStore();
+		options.debug = debugOptions;
+		options.browserType = options.browserType ?? "local";
 
-		this.options = {
-			launchOptions: options.launchOptions ?? {},
-			browserController: options.browserController ?? new BrowserController(this.puppeteer, options.launchOptions, 90000),
-			cookieStore: options.cookieStore ?? new MemoryCookieStore(),
-			debug: debugOptions
-		};
+		this.cookieStore = options.cookieStore;
+
+		if (options.browserType === "local") {
+			this.browserController = new LocalBrowserController(this.puppeteer, options.launchOptions ?? {}, options.browserTimeout, options.browserKeepAlive);
+		} else if (options.browserType === "remote") {
+			this.browserController = new RemoteBrowserController(this.puppeteer, options.launchOptions, options.browserTimeout, options.browserKeepAlive);
+		} else {
+			throw new GoogleServiceError("Undefined browsertype", { cause: options.browserType });
+		}
+
 
 		// Global Errors 
 		const changePassword = new ChangePassword();
@@ -108,30 +129,20 @@ export default class GoogleServiceLogin {
 		const verificationMethods = [this.totp];
 
 		// Session Management
-		this.retry = new RetryHandler();
-		const cookieLoader = new CookieLoader(this.options.cookieStore);
-		const autoCloseContextInitial = new AutoClose(debugOptions.autoClose);
-		const autoSignOutInitial = new AutoSignOut(debugOptions.autoSignOut);
-		const autoCloseContextRetry = new AutoClose(debugOptions.autoClose);
-		const autoSignOutRetry = new AutoSignOut(debugOptions.autoSignOut);
+		const cookieLoader = new CookieStoreHandler(this.cookieStore);
+		const autoCloseContext = new AutoClose(debugOptions.autoClose);
+		const autoSignOut = new AutoSignOut(debugOptions.autoSignOut);
+
 
 		// ================================================ //
 		// 						 Setup						//
 		// ================================================ //
 
 		// Entry Points
-		this.startHandler = autoCloseContextInitial;
-		this.retry = autoCloseContextRetry;
-
+		this.startHandler = autoCloseContext;
 		// Session Management
-		autoCloseContextInitial.addHandler(autoSignOutInitial); // Close Context must be first (execute last)
-		autoSignOutInitial.addHandler(cookieLoader);
-
-		autoCloseContextRetry.addHandler(autoSignOutRetry);
-		autoSignOutRetry.addHandler(this.retry);
-
-
-		this.retry.addHandler([identifier, password, loggedIn], captchas, prompts, verificationMethods);
+		autoCloseContext.addHandler(autoSignOut); // Close Context must be first (execute last)
+		autoSignOut.addHandler(cookieLoader);
 		cookieLoader.addHandler(gotoServiceLogin);
 
 
@@ -155,26 +166,36 @@ export default class GoogleServiceLogin {
 	addActionHandler(name: "recaptcha", handler: ReCaptchaActionHandler): void
 	addActionHandler(name: string, handler: ActionHandler) {
 		switch (name) {
-			case "totp":
-				this.totp.addActionHandler(handler);
-				break;
-			case "normal-captcha":
-				this.normalCaptcha.addActionHandler(handler);
-				break;
-			case "recaptcha":
-				this.recaptcha.addActionHandler(handler);
-				break;
-			default:
-				throw Error(`No ActionHandler of name '${name}'`);
+		case "totp":
+			this.totp.addActionHandler(handler);
+			break;
+		case "normal-captcha":
+			this.normalCaptcha.addActionHandler(handler);
+			break;
+		case "recaptcha":
+			this.recaptcha.addActionHandler(handler);
+			break;
+		default:
+			throw Error(`No ActionHandler of name '${name}'`);
 		}
 	}
 
 	async login(request: LoginRequest): Promise<RequestSession> {
-		const context = await this.options.browserController.createLoginBrowserContext();
-		const page = await SessionPage.init(context);
-		const cdpSession = await page.target().createCDPSession();
-
-		const loginContext = new RequestContext(request, context, page, cdpSession);
-		return new RequestSession(this.startHandler, this.retry, loginContext);
+		try {
+			const context = await this.browserController.createLoginBrowserContext();
+			const page = await SessionPage.init(context);
+			const cdpSession = await page.target().createCDPSession();
+	
+			const loginContext = new RequestContext(request, context, page, cdpSession);
+			return new RequestSession(this.startHandler, loginContext);
+		} catch(err: unknown) {
+			if (err instanceof GoogleServiceError) {
+				throw err;
+			} else if (err instanceof Error) {
+				const googleServiceError = new GoogleServiceError(err.message, {cause: err.cause});
+				googleServiceError.stack = err.stack;
+			}
+			throw err;
+		}
 	}
 }
