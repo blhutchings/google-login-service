@@ -8,7 +8,7 @@
             "name": "Debug",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}\\src\\index.ts",
+            "program": "${workspaceFolder}\\src\\example.ts",
             "preLaunchTask": "compile",
             "sourceMaps": true,
             "smartStep": true,
