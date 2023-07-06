@@ -3,13 +3,10 @@ import { ICookieStore } from "./ICookieStore";
 import { LRUCache } from "lru-cache";
 
 const defaultOptions: LRUCache.Options<string, Protocol.Network.Cookie[], unknown> = {
-	max: 500,
+	max: 100,
 
-	maxSize: 5000,
+	maxSize: 200,
 	sizeCalculation: () => { return 1; },
-
-	// return stale items before removing from cache?
-	allowStale: false,
 };
 
 export default class MemoryCookieStore implements ICookieStore {

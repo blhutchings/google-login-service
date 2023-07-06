@@ -1,9 +1,9 @@
 import RequestContext from "../../RequestContext";
-import ICookieStore from "../../cookies/ICookieStore";
+import { ICookieStore } from "../../cookies/ICookieStore";
 import { LoginResponse } from "../../types/LoginResponse";
 import AbstractChainHandler from "../abstract/AbstractChainHandler";
 
-export default class CookieLoader extends AbstractChainHandler {
+export default class CookieStoreHandler extends AbstractChainHandler {
 	private cookieStore: ICookieStore;
 
 	constructor(cookieStore: ICookieStore) {
