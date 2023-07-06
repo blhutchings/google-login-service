@@ -21,7 +21,10 @@ export default class RequestContext extends EventEmitter {
 	}
 
 	close() {
-		this.closed = true;
-		this.browserContext.emit("close", this.browserContext.id);
+		if (this.closed === false) {
+			this.closed = true;
+			this.browserContext.close();
+			this.browserContext.emit("close", this.browserContext.id);
+		}
 	}
 }
