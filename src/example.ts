@@ -1,20 +1,21 @@
+//import puppeteer from "puppeteer";
 import { Solver } from "2captcha";
 import * as OTPAuth from "otpauth";
-import { PuppeteerLaunchOptions } from "puppeteer";
 import GoogleServiceLogin from "./GoogleServiceLogin";
+//import RemoteBrowserController from "./browser/RemoteBrowserController";
 import { ActionHandlerRequest } from "./handlers/abstract/AbstractActionHandler";
 import { NormalCaptchaResponse } from "./handlers/captcha/NormalCaptcha";
 import { ReCaptchaResponse } from "./handlers/captcha/ReCaptcha";
 
 async function main() {
 
-	const solver = new Solver("");
 
+	const solver = new Solver("123");
 
-	const secret = "";
+	const secret = "123";
 
 	const totp = new OTPAuth.TOTP({
-		label: "",
+		label: "Account",
 		algorithm: "SHA1",
 		digits: 6,
 		period: 30,
@@ -22,18 +23,28 @@ async function main() {
 	});
 
 
-	const options: PuppeteerLaunchOptions = {
+	// Local Options
+	const options = {
 		executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-		headless: false,
-		args: [
-			"--incognito"
-		]
+		headless: false
 	};
+	
+
+	
+	/* Remote Options
+	const options = {
+		browserWSEndpoint: ""
+	};
+	*/
+	
+	
 
 	const service = new GoogleServiceLogin({
-		launchOptions: options
+		browserType: "local",
+		launchOptions: options,
+		browserTimeout: 0
 	});
-
+	
 	service.addActionHandler("totp", async (req: ActionHandlerRequest, data: undefined) => {
 		return totp.generate();
 	});
@@ -47,20 +58,20 @@ async function main() {
 	});
 
 
-	for (let i = 0; i < 10; i++) {
-		try {
-			const session = await service.login({
-				identifier: "",
-				password: "",
-			});
-	
-			const res = await session.start();
-			res.cookies;
-			console.log("OK");
-		} catch (err) {
-			console.log("Error");
-			console.log(err);
-		}
+	try {
+		const session = await service.login({
+			identifier: "Account",
+			password: "123ABC",
+		});
+
+		const res = await session.start();
+
+		console.log("OK");
+		console.log(res.cookies);
+	} catch (err) {
+		console.log("Error");
+		console.log(err);
 	}
+
 }
 main();
