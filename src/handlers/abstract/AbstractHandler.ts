@@ -49,10 +49,11 @@ export default abstract class AbstractHandler {
 	protected async nextHandler(context: RequestContext): Promise<LoginResponse> {
 		try {
 			do {
-				await context.page.waitForNetworkIdle({ idleTime: 500, timeout: 30000 });
+				await context.page.waitForNetworkIdle({ idleTime: 1000, timeout: 30000 });
 			} while (await context.page.$("div#initialView[aria-busy='true'"));
 
 			const handler = await this.findFirstValidHandler(context);
+
 			if (handler) {
 				return await handler.handle(context);
 			} else {
