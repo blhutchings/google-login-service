@@ -4,7 +4,7 @@ export { GoogleServiceLogin };
 export { MemoryCookieStore };
 
 export * from "./browser/LocalBrowserController";
-export * from "./browser/AbstractBrowserController"
+export * from "./browser/AbstractBrowserController";
 export * from "./cookies/ICookieStore";
 export * from "./RequestSession";
 export * from "./RequestContext";
