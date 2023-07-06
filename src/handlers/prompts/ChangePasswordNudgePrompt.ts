@@ -10,11 +10,16 @@ export default class ChangePasswordNudgePrompt extends AbstractHandler {
 	}
     
 	async handle(context: RequestContext): Promise<LoginResponse> {
-		const next = await context.page.evaluate(() => {
-			return document.querySelector("button");
-		});
-		if (next) {
-			next.click();
+		const ok = await context.page.evaluate(() => {
+			const nextButton =  document.querySelector("button");
+			if (nextButton) {
+				nextButton.click();
+				return true;
+			} else {
+				return false;
+			}
+		});	
+		if (ok) {
 			return this.nextHandler(context);
 		} else {
 			throw await GoogleServiceLoginErrorFactory.createUndefined(context,"Could not find element to advance change password nudge prompt");

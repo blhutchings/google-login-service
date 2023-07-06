@@ -8,11 +8,17 @@ export default class AdditionalSecurityPrompt extends AbstractHandler {
 		return context.page.url().startsWith("https://gds.google.com/web/chip");
 	}
 	async handle(context: RequestContext): Promise<LoginResponse> {
-		const page = context.page;
+		const ok = await context.page.evaluate(() => {
+			const notNow = document.querySelector<HTMLButtonElement>("[data-is-touch-wrapper=\"true\"] > button");
+			if (notNow) {
+				notNow.click();
+				return true;
+			} else {
+				return false;
+			}
 
-		const notNow = await page.$("[data-is-touch-wrapper=\"true\"] > button");
-		if (notNow) {
-			await notNow.click();
+		});
+		if (ok) {
 			return this.nextHandler(context);
 		} else {
 			throw await GoogleServiceLoginErrorFactory.createUndefined(context, "Could not find element to dismiss additional security prompt");
