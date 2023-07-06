@@ -35,7 +35,7 @@ export default class SelectVerification extends AbstractHandler {
 		for (const [type, element] of challengeMap) {
 			const verificationHandler = this.verificationHandlers.get(type);
 			if (verificationHandler && verificationHandler.hasActionHandler()) {
-				element.click();
+				await element.click();
 				return this.nextVerificationHandler(context, verificationHandler);
 			}
 		}
