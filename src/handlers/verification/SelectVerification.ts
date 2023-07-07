@@ -21,7 +21,7 @@ export default class SelectVerification extends AbstractHandler {
 	}
 
 	async handle(context: RequestContext): Promise<LoginResponse> {
-		const challengeElements = await context.page.$$("div[data-challengetype]:not([data-challengetype='null'][data-challengeunavailable='true'])");
+		const challengeElements = await context.page.$$("div[data-challengetype]:not([data-challengetype='null'],[data-challengeunavailable='true'],[data-accountrecovery='true'])");
 		//const challengeElements = await context.page.$$("div[data-challengetype]:not([data-challengetype='null'][data-challengeunavailable='true'])");
 
 		const challengeMap = new Map<number, ElementHandle<HTMLDivElement>>();
