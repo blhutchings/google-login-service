@@ -26,7 +26,6 @@ import CookieStoreHandler from "./handlers/session/CookieStoreHandler";
 import SelectVerification from "./handlers/verification/SelectVerification";
 import TOTPVerification, { TOTPActionHandler } from "./handlers/verification/TOTPVerification";
 import SessionPage from "./utils/SessionPage";
-import RequestSession from "./RequestSession";
 import AutoSignOut from "./handlers/session/AutoSignOut";
 import { PuppeteerLaunchOptions } from "puppeteer-core";
 import { PuppeteerExtra } from "puppeteer-extra";
@@ -36,6 +35,7 @@ import { LoginRequest } from "./types/LoginRequest";
 import { ConnectOptions } from "puppeteer";
 import { AbstractBrowserController } from "./browser/AbstractBrowserController";
 import { GoogleServiceError } from "./utils/LoginError";
+import { LoginResponse } from "./types/LoginResponse";
 
 
 export type GoogleLoginServiceOptions = {
@@ -180,14 +180,14 @@ export default class GoogleServiceLogin {
 		}
 	}
 
-	async login(request: LoginRequest): Promise<RequestSession> {
+	async login(request: LoginRequest): Promise<LoginResponse> {
 		try {
 			const context = await this.browserController.createLoginBrowserContext();
 			const page = await SessionPage.init(context);
 			const cdpSession = await page.target().createCDPSession();
 	
 			const loginContext = new RequestContext(request, context, page, cdpSession);
-			return new RequestSession(this.startHandler, loginContext);
+			return this.startHandler.handle(loginContext);
 		} catch(err: unknown) {
 			if (err instanceof GoogleServiceError) {
 				throw err;
