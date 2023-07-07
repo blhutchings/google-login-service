@@ -6,7 +6,7 @@ export { MemoryCookieStore };
 export * from "./browser/LocalBrowserController";
 export * from "./browser/RemoteBrowserController";
 export * from "./cookies/ICookieStore";
-export * from "./RequestSession";
+export * from "./cookies/MemoryCookieStore";
 export * from "./RequestContext";
 export { ActionHandler, ActionHandlerRequest } from "./handlers/abstract/AbstractActionHandler";
 export { TOTPActionHandler } from "./handlers/verification/TOTPVerification";
