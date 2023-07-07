@@ -14,9 +14,11 @@ export default class AutoClose extends AbstractChainHandler {
 			const res = await this.nextHandler(context);
 			if (this.enabled) {
 				context.close();
+				res.context = undefined
 			}
 			return res;
 		} catch (err) {
+			// Close even if there is an error
 			if (this.enabled) {
 				context.close();
 			}

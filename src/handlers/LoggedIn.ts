@@ -20,6 +20,11 @@ export default class LoggedIn extends AbstractHandler {
 
 		await context.page.waitForNetworkIdle({ idleTime: 500, timeout: 30000 });
 
-		return new LoginResponse("Context Logged in", context.request, allContextCookies);
+		return {
+			message: "Context logged in",
+			request: context.request,
+			cookies: allContextCookies,
+			context: context
+		}
 	}
 }
