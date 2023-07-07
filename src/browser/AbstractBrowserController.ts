@@ -39,7 +39,6 @@ export abstract class AbstractBrowserController {
 
 					// If no open contexts, start timeout to close browser instance
 					if (this.openContexts.size === 0) {
-						console.log(`Closing in ${new Date(Date.now() + this.timeout)}`);
 						this.timeoutRef = setTimeout(() => {
 							if (this.browser) {
 								if (this.keepAlive) {
