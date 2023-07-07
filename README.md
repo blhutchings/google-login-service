@@ -19,62 +19,146 @@ npm install google-login-service
 
 ## Example Usage
 ```ts
-const options: PuppeteerLaunchOptions = {
-		executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-		headless: "new",
-		args: [
-			"--incognito"
-		]
-	};
+// Used for solving captchas
+const captchaSolver = new Solver("123");
 
-// Create the service
-const service = new GoogleLoginService({
-	launchOptions: options
-});
-
-// Create TOTP token generator
-const secret = "ABC";
-
+// Used for generating time-based one-time passwords
+const totpSecret = "123";
 const totp = new OTPAuth.TOTP({
-	label: "My Account",
+	label: "Account",
 	algorithm: "SHA1",
 	digits: 6,
 	period: 30,
-	secret: OTPAuth.Secret.fromBase32(secret)
+	secret: OTPAuth.Secret.fromBase32(totpSecret)
 });
 
-// Add handler functions with respect to the external input needed
-// Generating TOTP token for account
+// Local Browser Options
+const options: PuppeteerLaunchOptions = {
+	executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
+	headless: "new"
+};
+
+/* Remote Browser Options
+const options: ConnectOptions = {
+	browserWSEndpoint: "ws://localhost:3000"
+};
+*/
+
+const service = new GoogleServiceLogin({
+	browserType: "local",
+	launchOptions: options,
+	browserTimeout: 0
+});
+
 service.addActionHandler("totp", async (req: ActionHandlerRequest, data: undefined) => {
 	return totp.generate();
 });
 
-// Solving captchas
 service.addActionHandler("recaptcha", async (req: ActionHandlerRequest, data: ReCaptchaResponse) => {
-	return (await solver.recaptcha(data.key, data.url, { "data-s": data.data_s })).data;
+	return (await captchaSolver.recaptcha(data.key, data.url, { "data-s": data.data_s })).data;
 });
+
 service.addActionHandler("normal-captcha", async (req: ActionHandlerRequest, data: NormalCaptchaResponse) => {
-	return (await solver.imageCaptcha(data.img.data)).data;
+	return (await captchaSolver.imageCaptcha(data.img.data)).data;
 });
 
-// Try a couple of time, something is bound to go wrong internally :) 
-// Once cookies have been set once, the session will be reused/refreshed on every get
-for (let i = 0; i < 10; i++) {
-	try {
-		// Send the request
-		const session = await service.create({
-			identifier: "ABC",
-			password: "123",
-		});
-
-		// If successful, take your cookies
-		const res = await session.start();
-		console.log(res.cookies);
-	} catch (err) {
-		console.log(err);
-	}
+try {
+	const res = await service.login({
+		identifier: "Account",
+		password: "123ABC",
+	});
+	console.log(res.cookies);
+} catch (err) {
+	console.log(err);
 }
 ```
+
+## Documentation
+### GoogleLoginServiceOptions
+These are the options for the main service class which controls cookie reuse and the browser 
+```ts
+type GoogleLoginServiceOptions = {
+	browserTimeout?: number;
+	browserKeepAlive?: boolean;
+	cookieStore?: ICookieStore;
+	debug?: {
+		autoSignOut?: boolean;
+		autoClose?: boolean;
+	}
+} & ({
+	browserType?: "local"
+	launchOptions?: PuppeteerLaunchOptions,
+} | {
+	browserType?: "remote"
+	launchOptions: ConnectOptions,
+})
+```
+### `browserTimeout`
+**Type: `number`**\
+**Default: `30000`**\
+Controls how long the browser will stay open in milliseconds after the last context closes.
+
+### `browserKeepAlive`
+**Type: `boolean`**\
+**Default: `false`**\
+Will use `browser.disconnect()` instead of `browser.close()`
+
+### `cookieStore`
+**Type: `ICookieStore`**\
+**Default: `MemoryCookieStore`**\
+Getter and setter class for reusing cookie sessions to reduce MFA attempts
+
+### `debug`
+Optional flags for when debugging
+
+#### `autoSignOut`
+**Type: `boolean`**\
+**Default: `false`**\
+If true, any successful login's will automatically be signed out and cookies invalidaded.
+
+#### `autoClose: boolean`
+**Type: `boolean`**\
+**Default: `true`**\
+If true, context will not close on success or error
+
+### `browserType`
+**Type: `"local" | "remote"`**\
+**Default: `local`**\
+The source of the browser must be defined, with it either being a local browser or remote
+
+### If `browserType = "local"` then `launchOptions`
+**Type: [`PuppeteerLaunchOptions`](https://pptr.dev/api/puppeteer.puppeteerlaunchoptions)**\
+Uses a local browser which must be specifided or is bundled with puppeteer
+
+### If `browserType = "remote"` then `launchOptions`
+**Type: [`ConnectOptions`](https://pptr.dev/api/puppeteer.connectoptions)**\
+Uses a remote browser which must be connected through the network
+
+### LoginRequest
+```ts
+type LoginRequest = {
+    identifier: string,
+    password: string,
+    unique?: boolean
+}
+```
+### `identifier`
+**Type: `string`**\
+The identifier for the Google account, can either be an email or a phone number
+#### **Note:**
+> - If using a phone number, reRaptcha is used
+> - If using a email address, NormalCaptcha is used
+#### **Note:**
+> - If '@' is omitted, Google will append @gmail.com
+#### **Note:**
+> - Use the international prefix to select country, if omitted Google will use the default of the browser
+### `password`
+**Type: `string`**\
+The password used for the account
+### `unique`
+**Type: `boolean`**\
+**Default: `false`**\
+If `unique` is true, the CookieStore handler will be skipped, meaning cookies are not got or set
 
 ## Supported Verification Methods
 #### ✔️ Time-based one-time password (TOTP)
