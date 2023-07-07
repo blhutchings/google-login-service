@@ -25,6 +25,6 @@ export default class LoggedIn extends AbstractHandler {
 			request: context.request,
 			cookies: allContextCookies,
 			context: context
-		}
+		};
 	}
 }

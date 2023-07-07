@@ -59,12 +59,10 @@ async function main() {
 
 
 	try {
-		const session = await service.login({
+		const res = await service.login({
 			identifier: "Account",
 			password: "123ABC",
 		});
-
-		const res = await session.start();
 
 		console.log("OK");
 		console.log(res.cookies);
