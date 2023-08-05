@@ -1,6 +1,6 @@
 import { Solver } from "2captcha";
 import * as OTPAuth from "otpauth";
-import GoogleServiceLogin from "./GoogleServiceLogin";
+import GoogleLoginService from "./GoogleServiceLogin";
 import { ActionHandlerRequest } from "./handlers/abstract/AbstractActionHandler";
 import { NormalCaptchaResponse } from "./handlers/captcha/NormalCaptcha";
 import { ReCaptchaResponse } from "./handlers/captcha/ReCaptcha";
@@ -8,10 +8,10 @@ import { PuppeteerLaunchOptions } from "puppeteer";
 
 async function main() {
 	// Used for solving captchas
-	const captchaSolver = new Solver("123");
+	const captchaSolver = new Solver("11b3097fe0620319ae70167c4c507ed1");
 
 	// Used for generating time-based one-time passwords
-	const totpSecret = "123";
+	const totpSecret = "kztlu6ckv57bxzy2k6iwsf4gqhyctns6";
 	const totp = new OTPAuth.TOTP({
 		label: "Account",
 		algorithm: "SHA1",
@@ -22,8 +22,7 @@ async function main() {
 
 	// Local Browser Options
 	const options: PuppeteerLaunchOptions = {
-		executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
-		headless: "new"
+		headless: false
 	};
 
 	/* Remote Browser Options
@@ -32,7 +31,7 @@ async function main() {
 	};
 	*/
 
-	const service = new GoogleServiceLogin({
+	const service = new GoogleLoginService({
 		browserType: "local",
 		launchOptions: options,
 		browserTimeout: 0
@@ -52,8 +51,8 @@ async function main() {
 
 	try {
 		const res = await service.login({
-			identifier: "Account",
-			password: "123ABC",
+			identifier: "ytgdb0@gmail.com",
+			password: "rm3WLM0zIs7924XkBxp$pObC6*Q4g&6x1",
 		});
 		console.log(res.cookies);
 	} catch (err) {

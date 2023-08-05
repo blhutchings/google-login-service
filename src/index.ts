@@ -1,6 +1,7 @@
-import GoogleServiceLogin from "./GoogleServiceLogin";
+import GoogleLoginService, { GoogleLoginServiceOptions } from "./GoogleServiceLogin";
 import MemoryCookieStore from "./cookies/MemoryCookieStore";
-export { GoogleServiceLogin };
+export { GoogleLoginService };
+export { GoogleLoginServiceOptions };
 export { MemoryCookieStore };
 
 export * from "./browser/LocalBrowserController";
