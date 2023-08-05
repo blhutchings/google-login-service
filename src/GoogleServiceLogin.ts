@@ -34,18 +34,16 @@ import RemoteBrowserController from "./browser/RemoteBrowserController";
 import { LoginRequest } from "./types/LoginRequest";
 import { ConnectOptions } from "puppeteer";
 import { AbstractBrowserController } from "./browser/AbstractBrowserController";
-import { GoogleServiceError } from "./utils/LoginError";
 import { LoginResponse } from "./types/LoginResponse";
+import { GoogleServiceError } from "./utils/LoginError";
 
 
 export type GoogleLoginServiceOptions = {
 	browserTimeout?: number,
 	browserKeepAlive?: boolean,
 	cookieStore?: ICookieStore;
-	debug?: {
-		autoSignOut?: boolean;
-		autoClose?: boolean;
-	}
+	autoSignOut?: boolean;
+	autoClose?: boolean;
 } & ({
 	browserType?: "local"
 	launchOptions?: PuppeteerLaunchOptions,
@@ -54,7 +52,7 @@ export type GoogleLoginServiceOptions = {
 	launchOptions: ConnectOptions,
 })
 
-export default class GoogleServiceLogin {
+export default class GoogleLoginService {
 	private puppeteer: PuppeteerExtra;
 	private cookieStore: ICookieStore;
 	private browserController: AbstractBrowserController;
@@ -74,14 +72,11 @@ export default class GoogleServiceLogin {
 		puppeteerExtra.use(stealth);
 		this.puppeteer = puppeteerExtra;
 
-		const debugOptions = {
-			autoSignOut: options.debug?.autoSignOut ?? false,
-			autoClose: options.debug?.autoClose ?? true
-		};
 		options.browserTimeout = options.browserTimeout ?? 30000;
 		options.browserKeepAlive = options.browserKeepAlive ?? false;
 		options.cookieStore = options.cookieStore ?? new MemoryCookieStore();
-		options.debug = debugOptions;
+		options.autoSignOut = options?.autoSignOut ?? false,
+		options.autoClose = options?.autoClose ?? true;
 		options.browserType = options.browserType ?? "local";
 
 		this.cookieStore = options.cookieStore;
@@ -130,8 +125,8 @@ export default class GoogleServiceLogin {
 
 		// Session Management
 		const cookieLoader = new CookieStoreHandler(this.cookieStore);
-		const autoCloseContext = new AutoClose(debugOptions.autoClose);
-		const autoSignOut = new AutoSignOut(debugOptions.autoSignOut);
+		const autoCloseContext = new AutoClose(options.autoClose);
+		const autoSignOut = new AutoSignOut(options.autoSignOut);
 
 
 		// ================================================ //
