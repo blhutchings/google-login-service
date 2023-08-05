@@ -12,18 +12,21 @@ export default class CookieStoreHandler extends AbstractChainHandler {
 	}
 
 	async handle(context: RequestContext): Promise<LoginResponse> {
-		if (context.request.unique === undefined) context.request.unique = false;
+		if (context.request.loadCookies === undefined) context.request.loadCookies = true;
+		if (context.request.saveCookies === undefined) context.request.saveCookies = true;
 
-		if (context.request.unique) {
-			return await this.nextHandler(context);
-		} else {
+		if (context.request.loadCookies) {
 			const cookies = await this.cookieStore.get(context.request.identifier);
 			if (cookies) {
 				await context.page.setCookie(...cookies);
 			}
-			const res = await this.nextHandler(context);
-			await this.cookieStore.set(context.request.identifier, res.cookies);
-			return res;
 		}
+		
+		const res = await this.nextHandler(context);
+
+		if (context.request.saveCookies) {
+			await this.cookieStore.set(context.request.identifier, res.cookies);
+		}
+		return res;
 	}
 }

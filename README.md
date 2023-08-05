@@ -81,9 +81,10 @@ type GoogleLoginServiceOptions = {
 	browserTimeout?: number;
 	browserKeepAlive?: boolean;
 	cookieStore?: ICookieStore;
+	autoSignOut?: boolean;
+	autoClose?: boolean;
 	debug?: {
-		autoSignOut?: boolean;
-		autoClose?: boolean;
+
 	}
 } & ({
 	browserType?: "local"
@@ -108,15 +109,12 @@ Will use `browser.disconnect()` instead of `browser.close()`
 **Default: `MemoryCookieStore`**\
 Getter and setter class for reusing cookie sessions to reduce MFA attempts
 
-### `debug`
-Optional flags for when debugging
-
-#### `autoSignOut`
+### `autoSignOut`
 **Type: `boolean`**\
 **Default: `false`**\
 If true, any successful login's will automatically be signed out and cookies invalidaded.
 
-#### `autoClose: boolean`
+### `autoClose: boolean`
 **Type: `boolean`**\
 **Default: `true`**\
 If true, context will not close on success or error
@@ -139,7 +137,8 @@ Uses a remote browser which must be connected through the network
 type LoginRequest = {
     identifier: string,
     password: string,
-    unique?: boolean
+    loadCookies?: boolean
+	saveCookies?: boolean
 }
 ```
 ### `identifier`
@@ -155,10 +154,14 @@ The identifier for the Google account, can either be an email or a phone number
 ### `password`
 **Type: `string`**\
 The password used for the account
-### `unique`
+### `loadCookies`
 **Type: `boolean`**\
-**Default: `false`**\
-If `unique` is true, the CookieStore handler will be skipped, meaning cookies are not got or set
+**Default: `true`**\
+If `loadCookies` is true, the cookies will be loaded into the browser context If false, the cookies will not be loaded
+### `saveCookies`
+**Type: `boolean`**\
+**Default: `true`**\
+If `saveCookies` is true, the cookies will be saved for reuse. If false, the cookies will not be saved/
 
 ## Supported Verification Methods
 #### ✔️ Time-based one-time password (TOTP)
