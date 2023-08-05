@@ -9,17 +9,19 @@ type ErrorOptions = {
 export class GoogleServiceError extends Error {}
 
 export class GoogleServiceLoginError extends GoogleServiceError {
+	statusCode: LoginErrorStatus;
 	status: string;
 
 	constructor(status: LoginErrorStatus, message: string, options?: ErrorOptions) {
 		super(message, options);
+		this.statusCode = status;
 		this.status = LoginErrorStatus[status];
 
 	}
 }
 
 export class GoogleServiceLoginUndefinedError extends GoogleServiceLoginError {
-	state: PageState;
+	state?: PageState;
 
 	constructor(state: PageState, message: string, options?: ErrorOptions) {
 		super(LoginErrorStatus.UNDEFINED, message, options);
