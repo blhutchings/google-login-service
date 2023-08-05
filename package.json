@@ -10,6 +10,7 @@
 		"prestart": "npm run compile && npm run lint:fix",
 		"start": "node build/example.js",
 		"build": "tsup",
+		"prepare": "tsup",
 		"prepublishOnly": "npm run lint:fix && npm run build",
 		"lint": "npx eslint src/**/*.ts",
 		"lint:fix": "npx eslint src/**/*.ts --fix"
