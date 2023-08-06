@@ -189,8 +189,10 @@ export default class GoogleLoginService {
 			} else if (err instanceof Error) {
 				const googleServiceError = new GoogleServiceError(err.message, {cause: err.cause});
 				googleServiceError.stack = err.stack;
+				throw googleServiceError
+			} else {
+				throw err;
 			}
-			throw err;
 		}
 	}
 }
