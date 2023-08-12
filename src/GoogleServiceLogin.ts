@@ -145,6 +145,10 @@ export default class GoogleLoginService {
 		gotoServiceLogin.addHandler(loggedIn, identifier);
 		identifier.addHandler(password, captchas);
 		password.addHandler(loggedIn, selectVerification, prompts, verificationMethods);
+		
+		// Captchas
+		this.normalCaptcha.addHandler(password);
+		this.recaptcha.addHandler(password);
 
 		// Prompts
 		additionalSecurityPrompt.addHandler(loggedIn);
@@ -189,7 +193,7 @@ export default class GoogleLoginService {
 			} else if (err instanceof Error) {
 				const googleServiceError = new GoogleServiceError(err.message, {cause: err.cause});
 				googleServiceError.stack = err.stack;
-				throw googleServiceError
+				throw googleServiceError;
 			} else {
 				throw err;
 			}
