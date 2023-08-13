@@ -3,7 +3,7 @@ import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
 import { ActionHandlerRequest, AbstractActionHandler } from "../abstract/AbstractActionHandler";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 
 
 export type ReCaptchaResponse = {
@@ -31,7 +31,7 @@ export default class ReCaptcha extends AbstractActionHandler<ReCaptchaActionHand
 		});
 
 		if (!displaySet) {
-			throw await GoogleServiceLoginErrorFactory.createUndefined(context, "Could not find 'textarea#g-recaptcha-response'");
+			throw await GoogleServiceErrorFactory.createUndefined(context, "Could not find 'textarea#g-recaptcha-response'");
 		}
 
 		const url = context.page.url();
@@ -50,14 +50,14 @@ export default class ReCaptcha extends AbstractActionHandler<ReCaptchaActionHand
 			return captcha;
             
 		} else {
-			throw await GoogleServiceLoginErrorFactory.createUndefined(context, `Could not find a reCAPTCHA part - key:${key} data-s:${data_s}`);
+			throw await GoogleServiceErrorFactory.createUndefined(context, `Could not find a reCAPTCHA part - key:${key} data-s:${data_s}`);
 		}
 	}
 	protected async handleActionResponse(context: RequestContext, token?: string): Promise<LoginResponse> {
-		if (!token) throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.INVALID_REQUEST, "ReCaptcha response token is empty");
+		if (!token) throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.INVALID_REQUEST, "ReCaptcha response token is empty");
 
 		const submitButton = await this.getSubmitButton(context.page);
-		if (!submitButton) throw GoogleServiceLoginErrorFactory.createUndefined(context, "Could not create or find recaptcha submit button");
+		if (!submitButton) throw GoogleServiceErrorFactory.createUndefined(context, "Could not create or find recaptcha submit button");
         
 		await context.page.evaluate(() => {
 			let innerHTML = document.getElementById("g-recaptcha-response")?.innerHTML;

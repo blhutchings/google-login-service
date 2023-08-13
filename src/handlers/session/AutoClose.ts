@@ -1,5 +1,6 @@
 import RequestContext from "../../RequestContext";
 import { LoginResponse } from "../../types/LoginResponse";
+import { GoogleServiceLoginError } from "../../utils/LoginError";
 import AbstractChainHandler from "../abstract/AbstractChainHandler";
 
 export default class AutoClose extends AbstractChainHandler {
@@ -16,13 +17,16 @@ export default class AutoClose extends AbstractChainHandler {
 				context.close();
 				res.context = undefined;
 			}
+
 			return res;
 		} catch (err) {
-			// Close even if there is an error
 			if (this.enabled) {
 				context.close();
+				if (err instanceof GoogleServiceLoginError) {
+					err.context = undefined
+				}
 			}
-			throw err;
+			throw err
 		}
 	}
 }

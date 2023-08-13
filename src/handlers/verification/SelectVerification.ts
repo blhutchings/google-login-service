@@ -2,7 +2,7 @@ import { ElementHandle } from "puppeteer";
 import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceError, GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceError, GoogleServiceErrorFactory } from "../../utils/LoginError";
 import { ActionHandler } from "../abstract/AbstractActionHandler";
 import AbstractHandler from "../abstract/AbstractHandler";
 import AbstractVerificationHandler from "../abstract/AbstractVerificationHandler";
@@ -47,7 +47,7 @@ export default class SelectVerification extends AbstractHandler {
 		}).join("\n");
 
 
-		throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.NO_SUPPORTED_VERIFICATION, message);
+		throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.NO_SUPPORTED_VERIFICATION, message);
 	}
 
 	protected nextHandler(context: RequestContext): Promise<LoginResponse> {

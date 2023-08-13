@@ -1,7 +1,7 @@
 import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 import { ActionHandlerRequest, AbstractActionHandler } from "../abstract/AbstractActionHandler";
 
 
@@ -57,11 +57,11 @@ export default class NormalCaptcha extends AbstractActionHandler<NormalCaptchaAc
 				return captcha;
 			}
 		}
-		throw await GoogleServiceLoginErrorFactory.createUndefined(context, "Could not find captcha sources");
+		throw await GoogleServiceErrorFactory.createUndefined(context, "Could not find captcha sources");
 	}
 
 	protected async handleActionResponse(context: RequestContext, token?: string): Promise<LoginResponse> {
-		if (!token) throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.INVALID_REQUEST, "Normal Captcha response token is empty");
+		if (!token) throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.INVALID_REQUEST, "Normal Captcha response token is empty");
 
 		const page = context.page;
 		await page.waitForSelector("input#ca");

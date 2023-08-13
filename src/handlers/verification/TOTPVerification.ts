@@ -1,7 +1,7 @@
 import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 import { ActionHandlerRequest } from "../abstract/AbstractActionHandler";
 import AbstractVerificationHandler from "../abstract/AbstractVerificationHandler";
 
@@ -20,7 +20,7 @@ export default class TOTPVerification extends AbstractVerificationHandler<TOTPAc
 	}
     
 	protected async handleActionResponse(context: RequestContext, token?: string): Promise<LoginResponse> {
-		if (!token) throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.INVALID_REQUEST, "TOTP response token is empty");
+		if (!token) throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.INVALID_REQUEST, "TOTP response token is empty");
 
 		await context.page.type("input#totpPin", token);
 		await context.page.keyboard.press("Enter");

@@ -1,7 +1,7 @@
 import RequestContext from "../../RequestContext.js";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus.js";
 import { LoginResponse } from "../../types/LoginResponse.js";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError.js";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError.js";
 import AbstractHandler from "../abstract/AbstractHandler.js";
 
 export default class SessionExpired extends AbstractHandler {
@@ -13,7 +13,7 @@ export default class SessionExpired extends AbstractHandler {
 		const errorMessage = await context.page.evaluate(() => {
 			return String(document.querySelector<HTMLDivElement>("div#headingSubtext")?.innerText);
 		});
-		throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.SESSION_EXPIRED, errorMessage);
+		throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.SESSION_EXPIRED, errorMessage);
 	}
     
 }

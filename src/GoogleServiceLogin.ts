@@ -175,7 +175,7 @@ export default class GoogleLoginService {
 			this.recaptcha.addActionHandler(handler);
 			break;
 		default:
-			throw Error(`No ActionHandler of name '${name}'`);
+			throw new GoogleServiceError(`No ActionHandler of name '${name}'`);
 		}
 	}
 

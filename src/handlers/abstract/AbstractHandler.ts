@@ -1,7 +1,7 @@
 import { TimeoutError } from "puppeteer";
 import RequestContext from "../../RequestContext";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 
 export default abstract class AbstractHandler {
@@ -57,7 +57,7 @@ export default abstract class AbstractHandler {
 			if (handler) {
 				return await handler.handle(context);
 			} else {
-				throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.UNHANDABLE, "No handler can handle current state");
+				throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.UNHANDABLE, "No handler can handle current state");
 			}
 
 		} catch (err: unknown) {

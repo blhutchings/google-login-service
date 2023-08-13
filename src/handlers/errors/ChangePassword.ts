@@ -1,7 +1,7 @@
 import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 import AbstractHandler from "../abstract/AbstractHandler";
 
 export default class ChangePassword extends AbstractHandler {
@@ -10,6 +10,6 @@ export default class ChangePassword extends AbstractHandler {
 	}
     
 	async handle(context: RequestContext): Promise<LoginResponse> {
-		throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.ACTION_REQUIRED, "Account's password must be changed manually before continuing");
+		throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.ACTION_REQUIRED, "Account's password must be changed manually before continuing");
 	}
 }

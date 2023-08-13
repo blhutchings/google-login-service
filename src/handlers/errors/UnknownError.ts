@@ -1,7 +1,7 @@
 import RequestContext from "../../RequestContext.js";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus.js";
 import { LoginResponse } from "../../types/LoginResponse.js";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError.js";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError.js";
 import AbstractHandler from "../abstract/AbstractHandler.js";
 
 export default class UnknownError extends AbstractHandler {
@@ -16,7 +16,7 @@ export default class UnknownError extends AbstractHandler {
 			return String(document.querySelector("form")?.innerText);
 		});
 
-		throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.GOOGLE_API, errorMessage);
+		throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.GOOGLE_API, errorMessage);
 	}
 
 

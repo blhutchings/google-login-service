@@ -1,6 +1,6 @@
 import RequestContext from "../../RequestContext";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 import AbstractHandler from "../abstract/AbstractHandler";
 
 
@@ -23,7 +23,7 @@ export default class DefaultVerificationMethodPrompt extends AbstractHandler {
 		if (ok) {
 			return this.nextHandler(context);
 		} else {
-			throw await GoogleServiceLoginErrorFactory.createUndefined(context, "Could not find element to default verification method prompt");
+			throw await GoogleServiceErrorFactory.createUndefined(context, "Could not find element to default verification method prompt");
 		}
 	}
 

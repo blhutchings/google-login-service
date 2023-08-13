@@ -1,7 +1,7 @@
 import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceLoginErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 import AbstractHandler from "../abstract/AbstractHandler";
 
 export default class DeniedSignInRejected extends AbstractHandler {
@@ -13,6 +13,6 @@ export default class DeniedSignInRejected extends AbstractHandler {
 		const message = await context.page.evaluate(() => {
 			return String(document.querySelector("form")?.innerText);
 		});
-		throw GoogleServiceLoginErrorFactory.create(LoginErrorStatus.REJECTED, message);
+		throw GoogleServiceErrorFactory.create(context, LoginErrorStatus.REJECTED, message);
 	}
 }
