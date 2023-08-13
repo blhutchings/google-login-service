@@ -1,5 +1,8 @@
 import { Page } from "puppeteer";
 
+/**
+ * Creates a snapshot of a page as html, image and the url
+ */
 export class PageState {
 	url: URL;
 	html: string;
