@@ -1,7 +1,7 @@
 import { TimeoutError } from "puppeteer";
 import RequestContext from "../../RequestContext";
 import { LoginResponse } from "../../types/LoginResponse";
-import { GoogleServiceErrorFactory } from "../../utils/LoginError";
+import { GoogleServiceError, GoogleServiceErrorFactory } from "../../utils/LoginError";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 
 export default abstract class AbstractHandler {
@@ -62,11 +62,17 @@ export default abstract class AbstractHandler {
 
 		} catch (err: unknown) {
 			if (err instanceof TimeoutError) {
+				// Retry
 				const handler = await this.findFirstValidHandler(context);
-				if (handler) return await handler.handle(context);
+				if (handler) {
+					return await handler.handle(context);
+				}
+				throw err
+			} else if (err instanceof GoogleServiceError) {
+				throw err
+			} else {
+				throw GoogleServiceErrorFactory.createInternal(context, err)
 			}
-            
-			throw err;
 		}
 	}
 

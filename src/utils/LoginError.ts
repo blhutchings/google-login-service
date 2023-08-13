@@ -6,6 +6,7 @@ type ErrorOptions = {
 	cause?: unknown
 }
 
+
 export class GoogleServiceError extends Error {
 
 	constructor(message: string, options?: ErrorOptions) {
@@ -35,6 +36,14 @@ export class GoogleServiceLoginUndefinedError extends GoogleServiceLoginError {
 	}
 }
 
+export class GoogleServiceInternalError extends GoogleServiceLoginError {
+	internalError: any;
+	constructor(context: RequestContext, internalError: any, message: string, options?: ErrorOptions) {
+		super(context, LoginErrorStatus.INTERNAL, message, options);
+		this.internalError = internalError;
+	}
+}
+
 export class GoogleServiceErrorFactory {
 	static create(context: RequestContext, status: LoginErrorStatus, message: string): GoogleServiceLoginError {
 		return new GoogleServiceLoginError(context, status, message);
@@ -42,5 +51,9 @@ export class GoogleServiceErrorFactory {
 
 	static async createUndefined(context: RequestContext, message: string): Promise<GoogleServiceLoginUndefinedError> {
 		return new GoogleServiceLoginUndefinedError(context, await PageState.create(context.page), message);
+	}
+
+	static createInternal(context: RequestContext, internalError: any) {
+		return new GoogleServiceInternalError(context, internalError, "An internal error as occured")
 	}
 }

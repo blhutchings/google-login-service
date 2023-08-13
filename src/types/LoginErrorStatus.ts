@@ -1,4 +1,5 @@
 export enum LoginErrorStatus {
+	INTERNAL, // Wrapped internal exception
     UNDEFINED, // Unknown error has occured
     UNHANDABLE, // No handler for current state
     ACTION_REQUIRED, // Manual action is required from the user to fix an issue
