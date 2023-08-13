@@ -180,23 +180,11 @@ export default class GoogleLoginService {
 	}
 
 	async login(request: LoginRequest): Promise<LoginResponse> {
-		try {
-			const context = await this.browserController.createLoginBrowserContext();
-			const page = await SessionPage.init(context);
-			const cdpSession = await page.target().createCDPSession();
-	
-			const loginContext = new RequestContext(request, context, page, cdpSession);
-			return this.startHandler.handle(loginContext);
-		} catch(err: unknown) {
-			if (err instanceof GoogleServiceError) {
-				throw err;
-			} else if (err instanceof Error) {
-				const googleServiceError = new GoogleServiceError(err.message, {cause: err.cause});
-				googleServiceError.stack = err.stack;
-				throw googleServiceError;
-			} else {
-				throw err;
-			}
-		}
+		const context = await this.browserController.createLoginBrowserContext();
+		const page = await SessionPage.init(context);
+		const cdpSession = await page.target().createCDPSession();
+
+		const requestContext = new RequestContext(request, context, page, cdpSession);
+		return this.startHandler.handle(requestContext);
 	}
 }
