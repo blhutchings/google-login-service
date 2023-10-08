@@ -2,7 +2,7 @@ import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
 import { GoogleServiceErrorFactory } from "../../utils/LoginError";
-import { ActionHandlerRequest, AbstractActionHandler } from "../abstract/AbstractActionHandler";
+import { AbstractActionHandler } from "../abstract/AbstractActionHandler";
 
 
 export type NormalCaptchaResponse = {
@@ -16,7 +16,7 @@ export type NormalCaptchaResponse = {
     }
 }
 
-export type NormalCaptchaActionHandler = (req: ActionHandlerRequest, captcha: NormalCaptchaResponse) => Promise<string>
+export type NormalCaptchaActionHandler = (context: RequestContext, captcha: NormalCaptchaResponse) => Promise<string>
 
 export default class NormalCaptcha extends AbstractActionHandler<NormalCaptchaActionHandler> {
 	async canHandle(context: RequestContext): Promise<boolean> {

@@ -2,7 +2,7 @@ import { Page } from "puppeteer";
 import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
-import { ActionHandlerRequest, AbstractActionHandler } from "../abstract/AbstractActionHandler";
+import { AbstractActionHandler } from "../abstract/AbstractActionHandler";
 import { GoogleServiceErrorFactory } from "../../utils/LoginError";
 
 
@@ -12,7 +12,7 @@ export type ReCaptchaResponse = {
     data_s: string
 }
 
-export type ReCaptchaActionHandler = (req: ActionHandlerRequest, captcha: ReCaptchaResponse) => Promise<string | undefined>
+export type ReCaptchaActionHandler = (context: RequestContext, captcha: ReCaptchaResponse) => Promise<string | undefined>
 
 export default class ReCaptcha extends AbstractActionHandler<ReCaptchaActionHandler> {
 	async canHandle(context: RequestContext): Promise<boolean> {

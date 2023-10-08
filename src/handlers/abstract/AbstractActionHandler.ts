@@ -3,11 +3,8 @@ import { LoginResponse } from "../../types/LoginResponse";
 import { GoogleServiceError } from "../../utils/LoginError";
 import AbstractHandler from "./AbstractHandler";
 
-export type ActionHandler = (req: ActionHandlerRequest, data?: any) => Promise<any>
+export type ActionHandler = (context: RequestContext, data?: any) => Promise<any>
 
-export type ActionHandlerRequest = {
-	identifier: string
-}
 
 export abstract class AbstractActionHandler<T extends ActionHandler> extends AbstractHandler {
 	protected actionHandler?: T;
@@ -24,9 +21,7 @@ export abstract class AbstractActionHandler<T extends ActionHandler> extends Abs
 		if (this.actionHandler) {
 			const data = await this.handleActionSetup(context);
 
-			const actionResponse = await this.actionHandler({
-				identifier: context.request.identifier
-			}, data);
+			const actionResponse = await this.actionHandler(context, data);
 
 			return this.handleActionResponse(context, actionResponse);
 		} else {
