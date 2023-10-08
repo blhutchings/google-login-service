@@ -171,7 +171,7 @@ If `saveCookies` is true, the cookies will be saved for reuse. If false, the coo
 #### ❌ SMS verification 
 #### ❌ Confirm recovery email
 
-### Never - Requires a human
+### Unlikely 
 #### ❌ Google prompt
 #### ❌ Passkey
 #### ❌ Offline one-time password (OOTP)
