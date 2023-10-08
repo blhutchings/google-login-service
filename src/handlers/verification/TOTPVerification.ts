@@ -2,11 +2,10 @@ import RequestContext from "../../RequestContext";
 import { LoginErrorStatus } from "../../types/LoginErrorStatus";
 import { LoginResponse } from "../../types/LoginResponse";
 import { GoogleServiceErrorFactory } from "../../utils/LoginError";
-import { ActionHandlerRequest } from "../abstract/AbstractActionHandler";
 import AbstractVerificationHandler from "../abstract/AbstractVerificationHandler";
 
 
-export type TOTPActionHandler = (req: ActionHandlerRequest, data?: never) => Promise<string>
+export type TOTPActionHandler = (context: RequestContext, data?: never) => Promise<string>
 
 export default class TOTPVerification extends AbstractVerificationHandler<TOTPActionHandler> {
 	readonly type = 6;

@@ -36,7 +36,7 @@ import { ConnectOptions } from "puppeteer";
 import { AbstractBrowserController } from "./browser/AbstractBrowserController";
 import { LoginResponse } from "./types/LoginResponse";
 import { GoogleServiceError } from "./utils/LoginError";
-
+import * as OTPAuth from "otpauth";
 
 export type GoogleLoginServiceOptions = {
 	browserTimeout?: number,
@@ -158,6 +158,20 @@ export default class GoogleLoginService {
 		// Verification
 		selectVerification.addHandler(this.totp);
 		this.totp.addHandler(loggedIn, prompts);
+
+		// Default TOTP Behaviour
+		this.addActionHandler("totp", async (context: RequestContext, data: undefined) => {
+			const totp = new OTPAuth.TOTP({
+				label: "Account",
+				algorithm: "SHA1",
+				digits: 6,
+				period: 30,
+				secret: OTPAuth.Secret.fromBase32(context.request.totpSecret)
+			});
+			return totp.generate();
+		});
+	
+	
 	}
 
 	addActionHandler(name: "totp", handler: TOTPActionHandler): void
