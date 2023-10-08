@@ -54,6 +54,6 @@ export class GoogleServiceErrorFactory {
 	}
 
 	static createInternal(context: RequestContext, internalError: any) {
-		return new GoogleServiceInternalError(context, internalError, "An internal error as occured")
+		return new GoogleServiceInternalError(context, internalError, "An internal error as occured");
 	}
 }

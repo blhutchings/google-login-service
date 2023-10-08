@@ -67,11 +67,11 @@ export default abstract class AbstractHandler {
 				if (handler) {
 					return await handler.handle(context);
 				}
-				throw err
+				throw err;
 			} else if (err instanceof GoogleServiceError) {
-				throw err
+				throw err;
 			} else {
-				throw GoogleServiceErrorFactory.createInternal(context, err)
+				throw GoogleServiceErrorFactory.createInternal(context, err);
 			}
 		}
 	}

@@ -16,6 +16,8 @@ export default class SelectVerification extends AbstractHandler {
 	}
 
 	addHandler(handler: AbstractVerificationHandler<ActionHandler>) {
+
+		
 		this.verificationHandlers.set(handler.type, handler);
 		return this;
 	}

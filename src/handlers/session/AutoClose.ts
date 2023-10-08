@@ -23,10 +23,10 @@ export default class AutoClose extends AbstractChainHandler {
 			if (this.enabled) {
 				context.close();
 				if (err instanceof GoogleServiceLoginError) {
-					err.context = undefined
+					err.context = undefined;
 				}
 			}
-			throw err
+			throw err;
 		}
 	}
 }
