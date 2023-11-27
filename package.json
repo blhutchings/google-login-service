@@ -1,6 +1,6 @@
 {
 	"name": "google-service-login",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"description": "Produce browser cookies for an Google Account",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",

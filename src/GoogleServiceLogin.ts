@@ -27,7 +27,7 @@ import SelectVerification from "./handlers/verification/SelectVerification";
 import TOTPVerification, { TOTPActionHandler } from "./handlers/verification/TOTPVerification";
 import SessionPage from "./utils/SessionPage";
 import AutoSignOut from "./handlers/session/AutoSignOut";
-import { PuppeteerLaunchOptions } from "puppeteer-core";
+import { PuppeteerLaunchOptions } from "puppeteer";
 import { PuppeteerExtra } from "puppeteer-extra";
 import LocalBrowserController from "./browser/LocalBrowserController";
 import RemoteBrowserController from "./browser/RemoteBrowserController";
