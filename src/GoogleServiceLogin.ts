@@ -69,6 +69,7 @@ export default class GoogleLoginService {
 		const stealth = StealthPlugin();
 		stealth.enabledEvasions.delete("iframe.contentWindow");
 		stealth.enabledEvasions.delete("navigator.plugins");
+		stealth.enabledEvasions.delete('media.codecs')
 		puppeteerExtra.use(stealth);
 		this.puppeteer = puppeteerExtra;
 

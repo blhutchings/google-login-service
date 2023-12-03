@@ -9,6 +9,14 @@ export default class LocalBrowserController extends AbstractBrowserController {
 	constructor(puppeteer: PuppeteerExtra | PuppeteerNode, options: PuppeteerLaunchOptions, timeout: number, keepAlive: boolean) {
 		super(puppeteer, timeout, keepAlive);
 		this.options = options;
+		this.options.args = [
+			"--start-maximized",
+			"--no-sandbox",
+			"--disable-setuid-sandbox",
+			'--disable-blink-features=AutomationControlled',
+			'--window-position=0,0',
+		  ]
+		  this.options.ignoreDefaultArgs = ["--enable-automation"]
 	}
 
 	protected createBrowser() {
